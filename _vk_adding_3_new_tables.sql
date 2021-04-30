@@ -1,38 +1,41 @@
 USE vk;
 
--- Создадим таблицу тем новостей   
-DROP TABLE IF EXISTS topics;
-CREATE TABLE topics (
-	id_topic int (10) AUTO_INCREMENT,
-	topic_name varchar(100) NOT NULL,
-	id_author int (100) NOT NULL,
+-- Создание таблицы Видео
+DROP TABLE IF EXISTS videos;
+CREATE TABLE videos (
+	id SERIAL PRIMARY KEY,
+	name varchar(255) DEFAULT NULL,
+    user_id BIGINT UNSIGNED DEFAULT NULL,
+	media_id BIGINT unsigned NOT NULL,
+	created_at DATETIME DEFAULT NOW(),
 	
-	PRIMARY KEY (id_topic),
-	FOREIGN KEY (id_author) REFERENCES users(id)
+	FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (media_id) REFERENCES media(id)
 );
 
--- Создадим таблицу сообщений в новостной ленте
-DROP TABLE IF EXISTS posts;
-CREATE TABLE posts (
-	id_post int (10) AUTO_INCREMENT,
-	message text NOT NULL,
-	id_author BIGINT UNSIGNED NOT NULL,
-	id_topic int (10) NOT NULL,
+-- Создание таблицы Плейлист
+DROP TABLE IF EXISTS playlist;
+CREATE TABLE playlist (
+	id SERIAL PRIMARY KEY,
+	name varchar(255) DEFAULT NULL,
+    user_id BIGINT UNSIGNED DEFAULT NULL,
 
-	PRIMARY KEY (id_post),
-	FOREIGN KEY (id_author) REFERENCES users(id),
-	FOREIGN KEY (id_topic) REFERENCES topics(id_topic)
+    FOREIGN KEY (user_id) REFERENCES users(id) 	
 );
 
--- Создадим таблицу комментариев для новостей
-DROP TABLE IF EXISTS comments;
-CREATE TABLE comments (
-	id SERIAL primary key,
-	id_author BIGINT UNSIGNED NOT NULL,
-	id_post int (10) NOT NULL,
-	comment text,
-	created_at DATE
+-- Создание таблицы Музыка
+DROP TABLE IF EXISTS music;
+CREATE TABLE music (
+	id SERIAL PRIMARY KEY,
+	song_name varchar(255) DEFAULT NULL,
+	singer_name varchar(255) DEFAULT NULL,
+    user_id BIGINT UNSIGNED DEFAULT NULL,
+	media_id BIGINT unsigned NOT NULL,
+	playlist_id BIGINT unsigned NOT NULL,
 	
-	FOREIGN KEY (id_author) REFERENCES users(id),
-	FOREIGN KEY (id_post) REFERENCES posts(id_post)
+	INDEX song_name_idx(song_name),
+	INDEX singer_name_idx(singer_name),
+	FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (media_id) REFERENCES media(id),
+    FOREIGN KEY (playlist_id) REFERENCES playlist(id)
 );
